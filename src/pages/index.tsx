@@ -1,3 +1,34 @@
+import { signIn, signOut, useSession } from "next-auth/client";
+import Header from "../components/Header";
+
 export default function Home() {
-  return <h1>Home page</h1>;
+  const [session, loading] = useSession();
+
+  // When rendering client side don't display anything until loading is complete.
+  if (loading) {
+    return null;
+  }
+
+  // If no session exist, display a message to the user.
+  if (!loading && !session) {
+    return (
+      <>
+        <Header />
+        <div className="p-10 text-center text-3xl">
+          <h1>You must be logged in to see this page content.</h1>
+          <button onClick={() => signIn()}>Sign In</button>
+        </div>
+      </>
+    );
+  }
+
+  // If the session exists, display content to
+  return (
+    <>
+      <Header />
+      <div className="p-10 text-center text-3xl">
+        <h1>Welcome {session.user.name}</h1>
+      </div>
+    </>
+  );
 }
